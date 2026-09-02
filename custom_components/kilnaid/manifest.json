@@ -1,7 +1,7 @@
 {
   "domain": "kilnaid",
   "name": "KilnAid",
-  "codeowners": [],
+  "codeowners": ["@zander8807"],
   "config_flow": true,
   "documentation": "https://github.com/zander8807/home-assistant-kilnaid",
   "integration_type": "service",

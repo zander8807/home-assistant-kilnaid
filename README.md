@@ -1,5 +1,7 @@
 # KilnAid for Home Assistant
 
+[![Open your Home Assistant instance and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=zander8807&repository=home-assistant-kilnaid&category=integration)
+
 An experimental, read-only Home Assistant custom integration for L&L and other
 kilns using a Bartlett Genesis controller connected to the KilnAid cloud.
 
@@ -17,21 +19,28 @@ The integration does **not** start, stop, or program the kiln. Home Assistant
 must not be treated as a kiln safety controller. Follow the kiln manufacturer's
 supervision, installation, ventilation, and clearance requirements.
 
-## Installation
+## One-click installation with HACS
 
-### Manual
+[![Open your Home Assistant instance and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=zander8807&repository=home-assistant-kilnaid&category=integration)
+
+1. Select the button above and choose your Home Assistant instance.
+2. In HACS, select **Download** and restart Home Assistant when prompted.
+3. Return here and select **Add KilnAid**:
+
+[![Open your Home Assistant instance and start setting up KilnAid.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=kilnaid)
+
+4. Enter the email and password used by the KilnAid app.
+
+HACS must already be installed in Home Assistant. If it is not, follow the
+[official HACS installation guide](https://www.hacs.xyz/docs/use/download/download/).
+
+## Manual installation
 
 1. Copy `custom_components/kilnaid` into the `custom_components` directory in
    your Home Assistant configuration folder.
 2. Restart Home Assistant.
 3. Open **Settings → Devices & services → Add integration**.
 4. Search for **KilnAid** and enter the credentials used by the KilnAid app.
-
-### HACS custom repository
-
-1. In HACS, open **Integrations → Custom repositories**.
-2. Add this repository as category **Integration**.
-3. Install **KilnAid**, restart Home Assistant, and complete the setup above.
 
 ## Cloud API notice
 
