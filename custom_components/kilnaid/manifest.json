@@ -1,0 +1,12 @@
+{
+  "domain": "kilnaid",
+  "name": "KilnAid",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/zander8807/home-assistant-kilnaid",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/zander8807/home-assistant-kilnaid/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

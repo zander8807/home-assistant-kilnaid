@@ -49,4 +49,3 @@ Kiln Mfg.
 When reporting a problem, enable debug logging for `custom_components.kilnaid`
 and remove account email addresses, kiln serial numbers, MAC addresses, and any
 authentication values before sharing logs.
-
