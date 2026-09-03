@@ -49,6 +49,7 @@ class KilnAidApi:
                 json={"email": self._email, "password": self._password},
             )
         except ClientError as err:
+            self._token = None
             raise KilnAidConnectionError("Unable to connect to KilnAid") from err
 
         if response.status in (401, 403):
@@ -114,6 +115,10 @@ class KilnAidApi:
                     method, f"{API_URL}{path}", headers=headers, **kwargs
                 )
             except ClientError as err:
+                # A failed shared session/token could otherwise leave every future
+                # coordinator refresh unavailable until the integration is reloaded.
+                # Force a fresh login on the next refresh.
+                self._token = None
                 raise KilnAidConnectionError("Unable to connect to KilnAid") from err
 
             if response.status not in (401, 403):
@@ -126,13 +131,15 @@ class KilnAidApi:
 
         raise KilnAidAuthenticationError("KilnAid authentication expired")
 
-    @staticmethod
-    async def _read_json(response: ClientResponse) -> Any:
+    async def _read_json(self, response: ClientResponse) -> Any:
         """Validate a response and decode JSON without exposing response contents."""
         try:
             response.raise_for_status()
             return await response.json(content_type=None)
         except (ClientError, ValueError) as err:
+            # Treat HTTP and malformed responses as an invalid cloud session. Some
+            # KilnAid failures are only cleared by obtaining a new token.
+            self._token = None
             raise KilnAidConnectionError(
                 f"KilnAid returned HTTP {response.status} or invalid JSON"
             ) from err

@@ -145,7 +145,11 @@ class KilnData:
 
     @property
     def error(self) -> bool:
-        return self.mode == "Error" or bool(self.status.get("error"))
+        error = _dict(self.status.get("error"))
+        error_number = _integer(error.get("err_num"))
+        error_text = str(error.get("err_text") or "").strip().lower()
+        no_error = error_number in (None, 0, 255) and error_text in ("", "no errors")
+        return self.mode == "Error" or not no_error
 
     @property
     def error_number(self) -> int | None:

@@ -85,6 +85,22 @@ class KilnDataTest(unittest.TestCase):
         """Entities require a stable serial-number identifier."""
         self.assertIsNone(KilnData.from_api({"status": {"mode": "Idle"}}, {}))
 
+    def test_controller_no_errors_sentinel_is_not_an_error(self) -> None:
+        """Bartlett's 255/No Errors sentinel must not raise a problem sensor."""
+        kiln = KilnData.from_api(
+            {
+                "serial_number": "1234",
+                "status": {
+                    "mode": "Idle",
+                    "error": {"err_num": 255, "err_text": "No Errors"},
+                },
+            },
+            {},
+        )
+
+        self.assertIsNotNone(kiln)
+        self.assertFalse(kiln.error)
+
 
 if __name__ == "__main__":
     unittest.main()

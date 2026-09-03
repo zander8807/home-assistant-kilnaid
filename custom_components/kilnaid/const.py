@@ -8,7 +8,7 @@ PLATFORMS = ["sensor", "binary_sensor"]
 CONF_EMAIL = "email"
 CONF_PASSWORD = "password"
 
-DEFAULT_SCAN_INTERVAL = timedelta(seconds=45)
+DEFAULT_SCAN_INTERVAL = timedelta(minutes=2)
 
 LOGIN_URL = "https://bartinst-user-service-prod.herokuapp.com/login"
 API_URL = "https://kiln.bartinst.com"

@@ -9,7 +9,7 @@ kilns using a Bartlett Genesis controller connected to the KilnAid cloud.
 
 - UI-based setup with your KilnAid email and password
 - Automatic token acquisition and reauthentication
-- One shared cloud poll every 45 seconds
+- One shared cloud poll every 2 minutes
 - Kiln status, program, segment, setpoint, firing time, and hold time
 - Chamber and per-zone temperatures
 - Firing, error, and cloud-connectivity binary sensors
