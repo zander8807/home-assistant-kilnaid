@@ -15,6 +15,7 @@ from .api import (
 )
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 from .models import KilnData
+from .history import KilnHistory
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,6 +34,7 @@ class KilnAidCoordinator(DataUpdateCoordinator[dict[str, KilnData]]):
             config_entry=entry,
         )
         self.api = api
+        self.history = KilnHistory(hass, entry)
 
     async def _async_update_data(self) -> dict[str, KilnData]:
         try:
@@ -41,4 +43,5 @@ class KilnAidCoordinator(DataUpdateCoordinator[dict[str, KilnData]]):
             raise ConfigEntryAuthFailed from err
         except KilnAidConnectionError as err:
             raise UpdateFailed(str(err)) from err
+        await self.history.async_observe(kilns)
         return {kiln.serial: kiln for kiln in kilns}

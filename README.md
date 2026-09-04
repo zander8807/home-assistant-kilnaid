@@ -14,6 +14,82 @@ kilns using a Bartlett Genesis controller connected to the KilnAid cloud.
 - Chamber and per-zone temperatures
 - Firing, error, and cloud-connectivity binary sensors
 - Optional controller, current, and voltage diagnostic sensors when available
+- Persistent firing records and an optional companion history card
+
+## Firing archive (v0.2.0)
+
+Each kiln's observed firings are saved independently of Recorder in
+`.storage/kilnaid.firings.<config-entry-id>`. Records include program, first
+observed firing time, observed heating end and outcome, recorded peak, temperature
+unit, stage/status samples, partial-start and gap flags. Cooling readings continue
+for up to 48 hours after heating ends or until another firing starts.
+Records are retained without automatic expiry; include the Home Assistant config
+directory in backups. Disk usage grows with recorded firings. These are local
+records, not a download of the controller's complete historical firing log.
+
+On first setup after upgrading, available Recorder history from the past 30 days
+is imported once. This cannot recover already-purged data. Subsequent cloud reports
+are saved atomically as they arrive (normally every two minutes). Duplicate,
+out-of-order and over-15-minute-old cloud reports are ignored.
+
+An observed idle-to-firing transition captures a start within the polling interval.
+A recording is marked **partial** if its first observation is already firing or a
+gap of more than 15 minutes precedes the start. Missing samples do not themselves
+end a firing. Gaps during a firing are flagged separately. A changed firing counter
+plus reset elapsed clock can identify a missed firing boundary. Entire firings
+while HA or the cloud connection is down cannot reliably be recovered. End times
+are observed transitions, not guaranteed exact controller times. A firing's
+`outcome` may be Complete, Idle, Error, Stopped or Cooling; stopping is not assumed
+to mean successful completion.
+
+### Companion dashboard card
+
+Install **ApexCharts Card** through HACS and add its resource as usual. Add this
+JavaScript module under dashboard resources:
+
+```text
+/kilnaid/kiln-history-card.js?v=0.2.0
+```
+
+The integration serves the bundled card automatically. No separate file copy is
+needed. Use your own KilnAid **status** entity:
+
+```yaml
+type: custom:kilnaid-history-card
+entity: sensor.my_kiln_status
+```
+
+The card defaults to the newest firing, offers an archive selector, marks heating
+end and shows recorded cooling temperatures. It refreshes once per minute while
+mounted, regardless of the kiln's current online state. The archive must be
+loaded in Home Assistant; it remains accessible during normal cloud poll failures.
+
+For an optional Bubble Card v3.2+ pop-up, use the standalone format:
+
+```yaml
+type: custom:bubble-card
+card_type: pop-up
+hash: '#kiln-history'
+name: Kiln history
+button_type: name
+cards:
+  - type: custom:kilnaid-history-card
+    entity: sensor.my_kiln_status
+    popup_hash: '#kiln-history'
+```
+
+Point a dashboard card's navigation tap action at `#kiln-history`. Setting
+`popup_hash` pauses archive requests while the pop-up is closed. Bubble Card is
+optional; ApexCharts is only needed to draw the graph.
+
+### Archive API
+
+Authenticated WebSocket command `kilnaid/firings` accepts `entity_id` (a KilnAid
+status sensor). It returns newest-first `fires` summaries without samples. Add
+`firing_id` to retrieve one full record. It checks the user's read permission for
+that entity and scopes records to its kiln/config entry. Archive readings are not
+published under `/local` or in sensor attributes. This API can also be used to
+export records. No deletion endpoint is provided.
 
 The integration does **not** start, stop, or program the kiln. Home Assistant
 must not be treated as a kiln safety controller. Follow the kiln manufacturer's

@@ -11,6 +11,13 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .api import KilnAidApi
 from .const import CONF_EMAIL, CONF_PASSWORD, PLATFORMS
 from .coordinator import KilnAidCoordinator
+from .history import async_setup_history
+
+
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    """Serve the optional companion card and authenticated history API."""
+    await async_setup_history(hass)
+    return True
 
 
 @dataclass(slots=True)
@@ -29,6 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry.data[CONF_PASSWORD],
     )
     coordinator = KilnAidCoordinator(hass, entry, api)
+    await coordinator.history.async_load()
     await coordinator.async_config_entry_first_refresh()
 
     entry.runtime_data = KilnAidRuntimeData(api=api, coordinator=coordinator)
