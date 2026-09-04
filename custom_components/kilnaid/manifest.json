@@ -1,10 +1,16 @@
 {
   "domain": "kilnaid",
   "name": "KilnAid",
-  "codeowners": ["@zander8807"],
+  "after_dependencies": [
+    "recorder"
+  ],
+  "codeowners": [
+    "@zander8807"
+  ],
   "config_flow": true,
-  "dependencies": ["http"],
-  "after_dependencies": ["recorder"],
+  "dependencies": [
+    "http"
+  ],
   "documentation": "https://github.com/zander8807/home-assistant-kilnaid",
   "integration_type": "service",
   "iot_class": "cloud_polling",

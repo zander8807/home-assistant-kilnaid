@@ -7,11 +7,14 @@ from dataclasses import dataclass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers import config_validation as cv
 
 from .api import KilnAidApi
-from .const import CONF_EMAIL, CONF_PASSWORD, PLATFORMS
+from .const import CONF_EMAIL, CONF_PASSWORD, DOMAIN, PLATFORMS
 from .coordinator import KilnAidCoordinator
 from .history import async_setup_history
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
